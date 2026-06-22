@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { fetchSessions } from "../api";
 import Loader from "../components/Loader";
 
+// ─── Config ───────────────────────────────────────────────
+const TRACKER_URL = import.meta.env.VITE_TRACKER_URL;
+
 const SessionsPage = () => {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,10 +37,10 @@ const SessionsPage = () => {
     return id.substring(0, 8) + "...";
   };
 
-  // ─── Loading State ──────────────────────────────────────
+  // ─── Loading State ────────────────────────────────────
   if (loading) return <Loader message="Fetching sessions..." />;
 
-  // ─── Error State ────────────────────────────────────────
+  // ─── Error State ──────────────────────────────────────
   if (error) {
     return (
       <div style={styles.errorBox}>
@@ -49,7 +52,7 @@ const SessionsPage = () => {
     );
   }
 
-  // ─── Empty State ────────────────────────────────────────
+  // ─── Empty State ──────────────────────────────────────
   if (sessions.length === 0) {
     return (
       <div style={styles.emptyBox}>
@@ -58,20 +61,36 @@ const SessionsPage = () => {
         <p style={styles.emptySubText}>
           Open the{" "}
           <a
-            href="http://localhost:5000/tracker/demo.html"
+            href={`${TRACKER_URL}/demo.html`}
             target="_blank"
             rel="noreferrer"
             style={styles.demoLink}
           >
-            Demo Page
+            Home Demo Page
+          </a>{" "}
+          or{" "}
+          <a
+            href={`${TRACKER_URL}/demo2.html`}
+            target="_blank"
+            rel="noreferrer"
+            style={styles.demoLink}
+          >
+            Shop Demo Page
           </a>{" "}
           and interact to generate sessions.
         </p>
+
+        {/* Show URLs for reference */}
+        <div style={styles.urlBox}>
+          <p style={styles.urlLabel}>📌 Demo Pages:</p>
+          <p style={styles.urlText}>🏠 {TRACKER_URL}/demo.html</p>
+          <p style={styles.urlText}>🛍️ {TRACKER_URL}/demo2.html</p>
+        </div>
       </div>
     );
   }
 
-  // ─── Sessions Table ─────────────────────────────────────
+  // ─── Sessions Table ───────────────────────────────────
   return (
     <div style={styles.container}>
       {/* Header */}
@@ -80,10 +99,31 @@ const SessionsPage = () => {
         <div style={styles.badge}>{sessions.length} Total Sessions</div>
       </div>
 
-      {/* Refresh Button */}
-      <button style={styles.refreshBtn} onClick={loadSessions}>
-        🔄 Refresh
-      </button>
+      {/* Demo Page Links */}
+      <div style={styles.demoLinksBar}>
+        <span style={styles.demoLinksLabel}>🧪 Test Pages:</span>
+        <a
+          href={`${TRACKER_URL}/demo.html`}
+          target="_blank"
+          rel="noreferrer"
+          style={styles.demoPageLink}
+        >
+          🏠 Home Page
+        </a>
+        <a
+          href={`${TRACKER_URL}/demo2.html`}
+          target="_blank"
+          rel="noreferrer"
+          style={styles.demoPageLink}
+        >
+          🛍️ Shop Page
+        </a>
+
+        {/* Refresh Button */}
+        <button style={styles.refreshBtn} onClick={loadSessions}>
+          🔄 Refresh
+        </button>
+      </div>
 
       {/* Table */}
       <div style={styles.tableWrapper}>
@@ -156,7 +196,7 @@ const styles = {
     display: "flex",
     alignItems: "center",
     gap: "16px",
-    marginBottom: "20px",
+    marginBottom: "16px",
   },
   title: {
     fontSize: "28px",
@@ -170,6 +210,27 @@ const styles = {
     borderRadius: "20px",
     fontSize: "14px",
   },
+  demoLinksBar: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    marginBottom: "20px",
+    flexWrap: "wrap",
+  },
+  demoLinksLabel: {
+    fontSize: "14px",
+    color: "#555",
+    fontWeight: "600",
+  },
+  demoPageLink: {
+    backgroundColor: "#f0f4ff",
+    color: "#4361ee",
+    padding: "8px 16px",
+    borderRadius: "8px",
+    fontSize: "13px",
+    textDecoration: "none",
+    border: "1px solid #d0d9ff",
+  },
   refreshBtn: {
     backgroundColor: "#f0f4ff",
     border: "1px solid #4361ee",
@@ -178,7 +239,7 @@ const styles = {
     borderRadius: "8px",
     cursor: "pointer",
     fontSize: "14px",
-    marginBottom: "20px",
+    marginLeft: "auto",
   },
   tableWrapper: {
     overflowX: "auto",
@@ -271,6 +332,26 @@ const styles = {
   },
   demoLink: {
     color: "#4361ee",
+  },
+  urlBox: {
+    marginTop: "24px",
+    backgroundColor: "#1a1a2e",
+    borderRadius: "10px",
+    padding: "16px 24px",
+    display: "inline-block",
+    textAlign: "left",
+  },
+  urlLabel: {
+    color: "#00ff88",
+    fontFamily: "monospace",
+    fontSize: "13px",
+    marginBottom: "8px",
+  },
+  urlText: {
+    color: "#aaa",
+    fontFamily: "monospace",
+    fontSize: "12px",
+    marginTop: "4px",
   },
 };
 
