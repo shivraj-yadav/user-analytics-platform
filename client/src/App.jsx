@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import SessionsPage from "./pages/SessionsPage";
 import SessionDetailPage from "./pages/SessionDetailPage";
+import HeatmapPage from "./pages/HeatmapPage";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
               path="/sessions/:session_id"
               element={<SessionDetailPage />}
             />
+            <Route path="/heatmap" element={<HeatmapPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
