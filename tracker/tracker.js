@@ -1,84 +1,120 @@
 (function () {
-  // ─── Configuration ─────────────────────────────────────
-  const API_URL = "http://localhost:5000/api/events";
 
-  // ─── Session Management ────────────────────────────────
+  // ─── Configuration ──────────────────────────────────────
+  const CONFIG = {
+    API_URL:        "http://localhost:5000/api/events",
+    SESSION_KEY:    "cf_session_id",
+    DEBUG:          true,
+    RETRY_LIMIT:    3,
+    RETRY_DELAY_MS: 1000,
+  };
+
+  // ─── Logger ─────────────────────────────────────────────
+  const log = {
+    info:  (msg) => CONFIG.DEBUG && console.log(`[CF Tracker] ℹ️  ${msg}`),
+    success:(msg) => CONFIG.DEBUG && console.log(`[CF Tracker] ✅ ${msg}`),
+    warn:  (msg) => CONFIG.DEBUG && console.warn(`[CF Tracker] ⚠️  ${msg}`),
+    error: (msg) => CONFIG.DEBUG && console.error(`[CF Tracker] ❌ ${msg}`),
+  };
+
+  // ─── Session Management ──────────────────────────────────
   function getSessionId() {
-    let sessionId = localStorage.getItem("cf_session_id");
+    try {
+      let sessionId = localStorage.getItem(CONFIG.SESSION_KEY);
 
-    if (!sessionId) {
-      sessionId = crypto.randomUUID
-        ? crypto.randomUUID()
-        : "sess_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9);
+      if (!sessionId) {
+        sessionId = crypto.randomUUID
+          ? crypto.randomUUID()
+          : "sess_" +
+            Date.now() +
+            "_" +
+            Math.random().toString(36).substr(2, 9);
 
-      localStorage.setItem("cf_session_id", sessionId);
-      console.log(`🆕 New session created: ${sessionId}`);
+        localStorage.setItem(CONFIG.SESSION_KEY, sessionId);
+        log.info(`New session created: ${sessionId}`);
+      }
+
+      return sessionId;
+    } catch (error) {
+      log.error(`Session error: ${error.message}`);
+      return "fallback_" + Date.now();
     }
-
-    return sessionId;
   }
 
-  // ─── Send Event to Backend ─────────────────────────────
-  function sendEvent(eventData) {
-    fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(eventData),
+  // ─── Send Event with Retry ───────────────────────────────
+  function sendEvent(eventData, retryCount = 0) {
+    fetch(CONFIG.API_URL, {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify(eventData),
     })
-      .then((response) => response.json())
+      .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-          console.log(`✅ Event sent: ${eventData.event_type}`);
+          log.success(`Event sent: ${eventData.event_type}`);
+        } else {
+          log.warn(`Event rejected: ${data.message}`);
         }
       })
       .catch((error) => {
-        console.warn(`⚠️ Failed to send event: ${error.message}`);
+        if (retryCount < CONFIG.RETRY_LIMIT) {
+          log.warn(`Retry ${retryCount + 1} for event: ${eventData.event_type}`);
+          setTimeout(
+            () => sendEvent(eventData, retryCount + 1),
+            CONFIG.RETRY_DELAY_MS
+          );
+        } else {
+          log.error(`Failed after ${CONFIG.RETRY_LIMIT} retries: ${error.message}`);
+        }
       });
   }
 
-  // ─── Track Page View ───────────────────────────────────
+  // ─── Build Base Event ────────────────────────────────────
+  function buildBaseEvent(type) {
+    return {
+      session_id: getSessionId(),
+      event_type: type,
+      page_url:   window.location.href,
+      timestamp:  new Date().toISOString(),
+    };
+  }
+
+  // ─── Track Page View ─────────────────────────────────────
   function trackPageView() {
-    const eventData = {
-      session_id: getSessionId(),
-      event_type: "page_view",
-      page_url: window.location.href,
-      timestamp: new Date().toISOString(),
-    };
-
-    sendEvent(eventData);
+    const event = buildBaseEvent("page_view");
+    log.info(`Tracking page_view: ${event.page_url}`);
+    sendEvent(event);
   }
 
-  // ─── Track Click ───────────────────────────────────────
-  function trackClick(event) {
-    const eventData = {
-      session_id: getSessionId(),
-      event_type: "click",
-      page_url: window.location.href,
-      timestamp: new Date().toISOString(),
-      x: event.clientX,
-      y: event.clientY,
+  // ─── Track Click ─────────────────────────────────────────
+  function trackClick(e) {
+    const event = {
+      ...buildBaseEvent("click"),
+      x: Math.round(e.clientX),
+      y: Math.round(e.clientY),
     };
-
-    sendEvent(eventData);
+    log.info(`Tracking click at (${event.x}, ${event.y})`);
+    sendEvent(event);
   }
 
-  // ─── Initialize Tracking ───────────────────────────────
+  // ─── Initialize ──────────────────────────────────────────
   function init() {
-    console.log("🔍 CausalFunnel Tracker initialized");
+    log.info("CausalFunnel Tracker initialized");
 
-    // Track page view on load
+    // Track page view
     trackPageView();
 
-    // Track all clicks on the page
+    // Track clicks
     document.addEventListener("click", trackClick);
+
+    log.info("Event listeners attached");
   }
 
-  // Start tracking when DOM is ready
+  // Start when DOM ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
     init();
   }
+
 })();
