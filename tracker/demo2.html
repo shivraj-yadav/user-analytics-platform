@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CausalFunnel - Shop Page</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #fff5f7;
+      color: #333;
+    }
+
+    /* ── Top Navigation Bar ── */
+    .navbar {
+      background: #1a1a2e;
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar-brand {
+      color: #00ff88;
+      font-size: 20px;
+      font-weight: bold;
+      font-family: monospace;
+      text-decoration: none;
+    }
+
+    .navbar-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .navbar-links a {
+      color: #aaa;
+      text-decoration: none;
+      font-size: 15px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .navbar-links a:hover {
+      color: white;
+      background: #16213e;
+    }
+
+    .navbar-links a.active {
+      color: white;
+      background: #e63946;
+    }
+
+    /* ── Hero Section ── */
+    .hero {
+      background: linear-gradient(135deg, #e63946, #ff6b9d);
+      color: white;
+      padding: 60px 40px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 38px;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      font-size: 17px;
+      opacity: 0.9;
+      margin-bottom: 24px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── Container ── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .card h2 {
+      margin-bottom: 15px;
+      color: #1a1a2e;
+      font-size: 20px;
+    }
+
+    .card p {
+      margin-bottom: 15px;
+      line-height: 1.6;
+      color: #555;
+      font-size: 15px;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      margin: 5px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      text-decoration: none;
+    }
+
+    .btn:hover     { transform: scale(1.05); }
+    .btn-red       { background: #e63946; color: white; }
+    .btn-pink      { background: #ff6b9d; color: white; }
+    .btn-purple    { background: #9b5de5; color: white; }
+    .btn-dark      { background: #1a1a2e; color: #00ff88; }
+
+    /* ── Category Tabs ── */
+    .category-tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      padding: 8px 20px;
+      border-radius: 20px;
+      border: 2px solid #e63946;
+      color: #e63946;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .tab:hover,
+    .tab.active {
+      background: #e63946;
+      color: white;
+    }
+
+    /* ── Product Grid ── */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .product-card {
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: white;
+    }
+
+    .product-card:hover {
+      border-color: #e63946;
+      background: #fff5f7;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 15px rgba(230, 57, 70, 0.15);
+    }
+
+    .product-card .emoji     { font-size: 36px; margin-bottom: 8px; }
+    .product-card .name      { font-size: 15px; color: #333; margin-bottom: 4px; font-weight: 600; }
+    .product-card .old-price { font-size: 12px; color: #aaa; text-decoration: line-through; }
+    .product-card .price     { font-size: 16px; color: #e63946; font-weight: bold; }
+
+    .product-card .add-btn {
+      margin-top: 10px;
+      padding: 8px 16px;
+      background: #e63946;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    /* ── Offer Banner ── */
+    .offer-banner {
+      width: 100%;
+      height: 140px;
+      background: linear-gradient(135deg, #9b5de5, #e63946);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .offer-banner:hover { transform: scale(1.01); }
+
+    /* ── Go to Home Link ── */
+    .goto-home {
+      background: linear-gradient(135deg, #4361ee, #2ec4b6);
+      color: white;
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .goto-home h2 { font-size: 22px; margin-bottom: 10px; }
+    .goto-home p  { font-size: 15px; margin-bottom: 20px; opacity: 0.9; }
+
+    .goto-home a {
+      background: white;
+      color: #4361ee;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 15px;
+      text-decoration: none;
+      display: inline-block;
+      transition: transform 0.2s;
+    }
+
+    .goto-home a:hover { transform: scale(1.05); }
+
+    /* ── Newsletter ── */
+    .newsletter {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .newsletter input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      min-width: 200px;
+    }
+
+    .newsletter button {
+      padding: 12px 24px;
+      background: #e63946;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* ── Info Bar ── */
+    .info-bar {
+      background: #1a1a2e;
+      color: #00ff88;
+      padding: 16px 20px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      margin-top: 10px;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      background: #1a1a2e;
+      color: #aaa;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      font-size: 14px;
+    }
+
+    .footer a {
+      color: #00ff88;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <a href="demo.html" class="navbar-brand">🔍 CausalFunnel</a>
+    <div class="navbar-links">
+      <a href="demo.html">🏠 Home</a>
+      <a href="demo2.html" class="active">🛍️ Shop</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="hero">
+    <h1>🛍️ Shop Page</h1>
+    <p>Browse our collection — every click you make is being tracked!</p>
+    <div class="hero-buttons">
+      <button class="btn btn-dark">🔥 New Arrivals</button>
+      <button class="btn" style="background:white; color:#e63946;">
+        💸 Best Deals
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+
+    <!-- Category Tabs -->
+    <div class="card">
+      <h2>📂 Browse Categories</h2>
+      <p>Click on any category to filter products.</p>
+      <div class="category-tabs">
+        <div class="tab active">👗 All</div>
+        <div class="tab">👟 Footwear</div>
+        <div class="tab">👜 Bags</div>
+        <div class="tab">⌚ Watches</div>
+        <div class="tab">🕶️ Eyewear</div>
+        <div class="tab">💍 Jewelry</div>
+      </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="card">
+      <h2>🛒 Products</h2>
+      <p>Click on any product card or Add to Cart button.</p>
+      <div class="product-grid">
+        <div class="product-card">
+          <div class="emoji">👟</div>
+          <div class="name">Sneakers</div>
+          <div class="old-price">$120</div>
+          <div class="price">$89</div>
+          <button class="add-btn">Add to Cart</button>
+        </div>
+        <div class="product-card">
+          <div class="emoji">👜</div>
+          <div class="name">Handbag</div>
+          <div class="old-price">$200</div>
+          <div class="price">$149</div>
+          <button class="add-btn">Add to Cart</button>
+        </div>
+        <div class="product-card">
+          <div class="emoji">⌚</div>
+          <div class="name">Watch</div>
+          <div class="old-price">$250</div>
+          <div class="price">$199</div>
+          <button class="add-btn">Add to Cart</button>
+        </div>
+        <div class="product-card">
+          <div class="emoji">🕶️</div>
+          <div class="name">Sunglasses</div>
+          <div class="old-price">$100</div>
+          <div class="price">$69</div>
+          <button class="add-btn">Add to Cart</button>
+        </div>
+        <div class="product-card">
+          <div class="emoji">👒</div>
+          <div class="name">Hat</div>
+          <div class="old-price">$60</div>
+          <div class="price">$39</div>
+          <button class="add-btn">Add to Cart</button>
+        </div>
+        <div class="product-card">
+          <div class="emoji">🧣</div>
+          <div class="name">Scarf</div>
+          <div class="old-price">$50</div>
+          <div class="price">$29</div>
+          <button class="add-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shop Actions -->
+    <div class="card">
+      <h2>⚡ Quick Actions</h2>
+      <p>Simulate common shopping actions below.</p>
+      <button class="btn btn-red">🛒 View Cart</button>
+      <button class="btn btn-pink">❤️ Wishlist</button>
+      <button class="btn btn-purple">💳 Checkout</button>
+      <button class="btn btn-dark">🔍 Search</button>
+    </div>
+
+    <!-- Offer Banner -->
+    <div class="card">
+      <h2>🎯 Special Offer</h2>
+      <p>Click the banner to simulate offer interaction.</p>
+      <div class="offer-banner">
+        💥 FLASH SALE — Extra 20% OFF on Fashion! Use Code: STYLE20
+      </div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="card">
+      <h2>📧 Newsletter Signup</h2>
+      <p>Enter email and click Subscribe — all tracked!</p>
+      <div class="newsletter">
+        <input type="email" placeholder="Enter your email address..." />
+        <button>Subscribe</button>
+      </div>
+    </div>
+
+    <!-- Go Back to Home -->
+    <div class="goto-home">
+      <h2>🏠 Looking for Electronics?</h2>
+      <p>
+        Visit our Home Page to browse laptops, phones and gadgets.
+        Each page tracks clicks separately for heatmap analysis!
+      </p>
+      <a href="demo.html">← Back to Home Page</a>
+    </div>
+
+    <!-- Session Info -->
+    <div class="card">
+      <h2>📌 Session Info</h2>
+      <div class="info-bar" id="sessionInfo">
+        Loading session info...
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>
+      🔍 CausalFunnel Analytics |
+      <a href="demo.html">Home</a> |
+      <a href="demo2.html">Shop</a>
+    </p>
+  </footer>
+
+  <!-- Tracking Script -->
+  <script src="tracker.js"></script>
+
+  <!-- Session Info Display -->
+  <script>
+    window.addEventListener("load", function () {
+      const sessionId = localStorage.getItem("cf_session_id");
+      document.getElementById("sessionInfo").innerHTML =
+        `📌 Session ID : ${sessionId || "Not set"}<br>` +
+        `📍 Page URL   : ${window.location.href}<br>` +
+        `🕐 Loaded At  : ${new Date().toLocaleString()}<br>` +
+        `📄 Page       : Shop Page (demo2.html)`;
+    });
+  </script>
+
+</body>
+</html>
