@@ -18,7 +18,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Serve static files from tracker folder (for demo page)
+// Serve static files from tracker folder
 app.use("/tracker", express.static(path.join(__dirname, "../tracker")));
 
 // Request logger middleware
@@ -28,8 +28,10 @@ app.use((req, res, next) => {
 });
 
 // ─── Routes ───────────────────────────────────────────────
-app.use("/api/health", require("./routes/health"));
-app.use("/api/events", require("./routes/events"));
+app.use("/api/health",    require("./routes/health"));
+app.use("/api/events",    require("./routes/events"));
+app.use("/api/sessions",  require("./routes/sessions"));
+app.use("/api/heatmap",   require("./routes/heatmap"));
 
 // ─── Handle Unknown Routes ────────────────────────────────
 app.use((req, res) => {
@@ -53,7 +55,9 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`📊 Health:    http://localhost:${PORT}/api/health`);
+  console.log(`📋 Sessions:  http://localhost:${PORT}/api/sessions`);
+  console.log(`🗺️  Heatmap:   http://localhost:${PORT}/api/heatmap?page_url=`);
   console.log(`🧪 Demo page: http://localhost:${PORT}/tracker/demo.html`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
 });
