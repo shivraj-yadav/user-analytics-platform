@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const path = require("path");
 const connectDB = require("./config/db");
 
 // Load environment variables
@@ -17,7 +18,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Request logger middleware (helpful for development)
+// Serve static files from tracker folder (for demo page)
+app.use("/tracker", express.static(path.join(__dirname, "../tracker")));
+
+// Request logger middleware
 app.use((req, res, next) => {
   console.log(`📨 ${req.method} ${req.url} - ${new Date().toISOString()}`);
   next();
@@ -25,6 +29,7 @@ app.use((req, res, next) => {
 
 // ─── Routes ───────────────────────────────────────────────
 app.use("/api/health", require("./routes/health"));
+app.use("/api/events", require("./routes/events"));
 
 // ─── Handle Unknown Routes ────────────────────────────────
 app.use((req, res) => {
@@ -49,5 +54,6 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`🧪 Demo page: http://localhost:${PORT}/tracker/demo.html`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
 });
