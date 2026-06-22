@@ -2,7 +2,10 @@
 
   // ─── Configuration ──────────────────────────────────────
   const CONFIG = {
-    API_URL:        "http://localhost:5000/api/events",
+    API_URL: window.location.hostname === "localhost"
+      ? "http://localhost:5000/api/events"
+      : "https://user-analytics-platform-72v0.onrender.com/api/events",
+
     SESSION_KEY:    "cf_session_id",
     DEBUG:          true,
     RETRY_LIMIT:    3,
@@ -11,10 +14,10 @@
 
   // ─── Logger ─────────────────────────────────────────────
   const log = {
-    info:  (msg) => CONFIG.DEBUG && console.log(`[CF Tracker] ℹ️  ${msg}`),
+    info:   (msg) => CONFIG.DEBUG && console.log(`[CF Tracker] ℹ️  ${msg}`),
     success:(msg) => CONFIG.DEBUG && console.log(`[CF Tracker] ✅ ${msg}`),
-    warn:  (msg) => CONFIG.DEBUG && console.warn(`[CF Tracker] ⚠️  ${msg}`),
-    error: (msg) => CONFIG.DEBUG && console.error(`[CF Tracker] ❌ ${msg}`),
+    warn:   (msg) => CONFIG.DEBUG && console.warn(`[CF Tracker] ⚠️  ${msg}`),
+    error:  (msg) => CONFIG.DEBUG && console.error(`[CF Tracker] ❌ ${msg}`),
   };
 
   // ─── Session Management ──────────────────────────────────
@@ -58,7 +61,7 @@
       })
       .catch((error) => {
         if (retryCount < CONFIG.RETRY_LIMIT) {
-          log.warn(`Retry ${retryCount + 1} for event: ${eventData.event_type}`);
+          log.warn(`Retry ${retryCount + 1} for: ${eventData.event_type}`);
           setTimeout(
             () => sendEvent(eventData, retryCount + 1),
             CONFIG.RETRY_DELAY_MS
@@ -100,13 +103,8 @@
   // ─── Initialize ──────────────────────────────────────────
   function init() {
     log.info("CausalFunnel Tracker initialized");
-
-    // Track page view
     trackPageView();
-
-    // Track clicks
     document.addEventListener("click", trackClick);
-
     log.info("Event listeners attached");
   }
 
