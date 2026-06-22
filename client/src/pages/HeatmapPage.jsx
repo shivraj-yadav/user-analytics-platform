@@ -4,17 +4,17 @@ import HeatmapCanvas from "../components/HeatmapCanvas";
 import Loader from "../components/Loader";
 
 // ─── Config ───────────────────────────────────────────────
-const TRACKER_URL  = import.meta.env.VITE_TRACKER_URL;
-const DEMO_PAGE_1  = `${TRACKER_URL}/demo.html`;
-const DEMO_PAGE_2  = `${TRACKER_URL}/demo2.html`;
+const TRACKER_URL = import.meta.env.VITE_TRACKER_URL;
+const DEMO_PAGE_1 = `${TRACKER_URL}/demo.html`;
+const DEMO_PAGE_2 = `${TRACKER_URL}/demo2.html`;
 
 const HeatmapPage = () => {
-  const [pageUrl, setPageUrl]   = useState(DEMO_PAGE_1);
-  const [clicks, setClicks]     = useState([]);
-  const [loading, setLoading]   = useState(false);
-  const [error, setError]       = useState(null);
-  const [fetched, setFetched]   = useState(false);
-  const [stats, setStats]       = useState(null);
+  const [pageUrl, setPageUrl] = useState(DEMO_PAGE_1);
+  const [clicks, setClicks] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [fetched, setFetched] = useState(false);
+  const [stats, setStats] = useState(null);
 
   // Auto fetch on mount
   useEffect(() => {
@@ -33,7 +33,7 @@ const HeatmapPage = () => {
       setFetched(false);
 
       const response = await fetchHeatmapData(pageUrl.trim());
-      const data     = response.data || [];
+      const data = response.data || [];
 
       setClicks(data);
       setFetched(true);
@@ -45,15 +45,14 @@ const HeatmapPage = () => {
 
         setStats({
           total: data.length,
-          avgX:  Math.round(xValues.reduce((a, b) => a + b, 0) / xValues.length),
-          avgY:  Math.round(yValues.reduce((a, b) => a + b, 0) / yValues.length),
-          maxX:  Math.max(...xValues),
-          maxY:  Math.max(...yValues),
+          avgX: Math.round(xValues.reduce((a, b) => a + b, 0) / xValues.length),
+          avgY: Math.round(yValues.reduce((a, b) => a + b, 0) / yValues.length),
+          maxX: Math.max(...xValues),
+          maxY: Math.max(...yValues),
         });
       } else {
         setStats(null);
       }
-
     } catch (err) {
       setError("Failed to fetch heatmap data. Make sure backend is running.");
     } finally {
@@ -75,7 +74,6 @@ const HeatmapPage = () => {
 
   return (
     <div style={styles.container}>
-
       {/* ─── Header ─────────────────────────────────── */}
       <div style={styles.header}>
         <h1 style={styles.title}>🗺️ Click Heatmap</h1>
@@ -181,11 +179,7 @@ const HeatmapPage = () => {
       </div>
 
       {/* ─── Error State ─────────────────────────────── */}
-      {error && (
-        <div style={styles.errorBox}>
-          ❌ {error}
-        </div>
-      )}
+      {error && <div style={styles.errorBox}>❌ {error}</div>}
 
       {/* ─── Loading State ───────────────────────────── */}
       {loading && <Loader message="Fetching click data..." />}
@@ -229,21 +223,26 @@ const HeatmapPage = () => {
       {/* ─── Heatmap Canvas ──────────────────────────── */}
       {fetched && !loading && (
         <div style={styles.canvasSection}>
-
           {/* Legend */}
           <div style={styles.legend}>
             <span style={styles.legendTitle}>🎨 Intensity Legend:</span>
             <div style={styles.legendItems}>
               <div style={styles.legendItem}>
-                <div style={{ ...styles.legendDot, backgroundColor: "#ff3232" }} />
+                <div
+                  style={{ ...styles.legendDot, backgroundColor: "#ff3232" }}
+                />
                 <span>High</span>
               </div>
               <div style={styles.legendItem}>
-                <div style={{ ...styles.legendDot, backgroundColor: "#ff9632" }} />
+                <div
+                  style={{ ...styles.legendDot, backgroundColor: "#ff9632" }}
+                />
                 <span>Medium</span>
               </div>
               <div style={styles.legendItem}>
-                <div style={{ ...styles.legendDot, backgroundColor: "#ffc832" }} />
+                <div
+                  style={{ ...styles.legendDot, backgroundColor: "#ffc832" }}
+                />
                 <span>Low</span>
               </div>
             </div>
@@ -551,4 +550,48 @@ const styles = {
     borderRadius: "12px",
     border: "1px solid #f0f0f0",
   },
-  
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+    backgroundColor: "white",
+  },
+  tableHead: {
+    backgroundColor: "#1a1a2e",
+  },
+  th: {
+    padding: "14px 20px",
+    textAlign: "left",
+    color: "#00ff88",
+    fontWeight: "600",
+    fontSize: "13px",
+    fontFamily: "monospace",
+  },
+  tableRow: {
+    borderBottom: "1px solid #f0f0f0",
+    backgroundColor: "white",
+    transition: "background-color 0.2s",
+  },
+  td: {
+    padding: "14px 20px",
+    fontSize: "14px",
+    color: "#333",
+  },
+  coordBadge: {
+    backgroundColor: "#f0f4ff",
+    color: "#4361ee",
+    padding: "4px 10px",
+    borderRadius: "6px",
+    fontFamily: "monospace",
+    fontSize: "13px",
+  },
+  sessionBadge: {
+    backgroundColor: "#f5f5f5",
+    color: "#555",
+    padding: "4px 10px",
+    borderRadius: "6px",
+    fontFamily: "monospace",
+    fontSize: "12px",
+  },
+};
+
+export default HeatmapPage;
