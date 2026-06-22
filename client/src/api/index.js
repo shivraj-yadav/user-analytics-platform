@@ -12,7 +12,6 @@ const API = axios.create({
 // ─── Request Interceptor ─────────────────────────────────
 API.interceptors.request.use(
   (config) => {
-    console.log(`📤 API Request: ${config.method.toUpperCase()} ${config.url}`);
     return config;
   },
   (error) => {
@@ -23,17 +22,9 @@ API.interceptors.request.use(
 // ─── Response Interceptor ────────────────────────────────
 API.interceptors.response.use(
   (response) => {
-    console.log(`📥 API Response: ${response.status} ${response.config.url}`);
     return response;
   },
   (error) => {
-    if (error.response) {
-      console.error(`❌ API Error ${error.response.status}: ${error.response.data?.message}`);
-    } else if (error.request) {
-      console.error("❌ No response from server. Is backend running?");
-    } else {
-      console.error(`❌ Request Error: ${error.message}`);
-    }
     return Promise.reject(error);
   }
 );

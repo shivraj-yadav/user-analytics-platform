@@ -7,7 +7,7 @@
       : "https://user-analytics-platform-72v0.onrender.com/api/events",
 
     SESSION_KEY:    "cf_session_id",
-    DEBUG:          true,
+    DEBUG:          window.location.hostname === "localhost",
     RETRY_LIMIT:    3,
     RETRY_DELAY_MS: 1000,
   };
